@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zstu.crm.workbench.dao.ActivityDao">
+    <select id="getActivityList" resultType="com.zstu.crm.workbench.domain.Activity">
+        select a.id,
+        a.name,
+        b.name as owner,
+        a.startDate,
+        a.endDate from tbl_activity a
+        join tbl_user b
+        on b.id = a.owner
+        <where>
+            <if test="name!=null and name!=''">
+                a.name like '%' #{name} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                and b.name like '%' #{owner} '%'
+            </if>
+            <if test="startDate!=null and startDate!=''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate!=null and endDate!=''">
+                and a.endDate &lt; #{endDate}
+            </if>
+        </where>
+        order by a.createTime desc
+        limit #{skipCount},#{pageSize}
+    </select>
+    <insert id="createActivity" >
+        insert into tbl_activity
+        (id,owner,name,startDate,endDate,cost,description,createTime,createBy,editTime,editBy) values (
+        #{id},
+        #{owner},
+        #{name},
+        #{startDate},
+        #{endDate},
+        #{cost},
+        #{description},
+        #{createTime},
+        #{createBy},
+        #{editTime},
+        #{editBy})
+    </insert>
+    <update id="updateActivity">
+        update tbl_activity set
+        owner=#{owner},name=#{name},cost=#{cost},description=#{description},editTime= #{editTime},editBy=#{editBy}
+        where id=#{id}
+
+    </update>
+    <select id="selectTotal" resultType="Integer">
+        select count(*) from tbl_activity a
+        join tbl_user b
+        on b.id = a.owner
+        <where>
+            <if test="name!=null and name!=''">
+            a.name like '%' #{name} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                and b.name like '%' #{owner} '%'
+            </if>
+            <if test="startDate!=null and startDate!=''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate!=null and endDate!=''">
+                and a.endDate &lt; #{endDate}
+            </if>
+        </where>
+
+    </select>
+    <delete id="deleteActivity">
+        delete from tbl_activity
+        where id in
+<foreach collection="array" item="id" open="(" close=")" separator=",">
+    #{id}
+</foreach>
+    </delete>
+    <select id="getActivityById" resultType="com.zstu.crm.workbench.domain.Activity">
+        select
+            a.id,
+            a.name,
+            a.startDate,
+            a.endDate,
+            a.cost,
+            a.description,
+            a.createTime,
+            a.editTime,
+            d.name as editBy,
+            c.name as createBy,
+            b.name as owner
+        from tbl_activity a
+        join tbl_user b
+             on b.id = a.owner
+        join tbl_user c
+             on c.id =a.createBy
+        left join tbl_user d
+             on d.id =a.editBy
+        where a.id = #{id}
+    </select>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

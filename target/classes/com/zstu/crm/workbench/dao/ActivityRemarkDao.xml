@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zstu.crm.workbench.dao.ActivityRemarkDao">
+    <select id="getActivityRemarkList" resultType="com.zstu.crm.workbench.domain.ActivityRemark">
+        select
+        a.id,
+        a.noteContent,
+        a.createTime,
+        c.name as createBy,
+        a.editTime,
+        d.name as editBy,
+        a.editFlag,
+        b.name as activityId
+        from tbl_activity_remark a
+        join tbl_activity b
+        on a.activityId =b.id
+        join tbl_user c
+        on a.createBy = c.id
+        left join tbl_user d
+        on a.editBy = d.id
+        where activityId = #{id}
+    </select>
+    <insert id="createActivityRemark">
+        insert into tbl_activity_remark (
+        id,
+        noteContent,
+        createTime,
+        createBy,
+        editTime,
+        editBy,
+        editFlag,
+        activityId)
+        value
+        (#{id},
+        #{noteContent},
+        #{createTime},
+        #{createBy},
+        #{editTime},
+        #{editBy},
+        #{editFlag},
+        #{activityId})
+    </insert>
+    <select id="selectActivityRemarkCount" resultType="Integer">
+        select count(*) from tbl_activity_remark where activityId in
+        <foreach collection="arrays" item="ids" open="(" close=")" separator=",">#{ids}</foreach>
+    </select>
+    <delete id="deleteActivityRemark">
+        delete from tbl_activity_remark where activityId in
+        <foreach collection="arrays" item="ids" open="(" close=")" separator=",">#{ids}</foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zstu.crm.settings.dao.UserDao">
+    <select id="login" resultType="com.zstu.crm.settings.domain.User">
+        select * from tbl_user where binary loginAct=#{loginAct} and loginPwd=#{loginPwd}
+    </select>
+    <select id="getUserList" resultType="com.zstu.crm.settings.domain.User">
+        select * from tbl_user
+    </select>
+    <select id="getUserById" resultType="com.zstu.crm.settings.domain.User">
+        select * from tbl_user where id=#{owner}
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
